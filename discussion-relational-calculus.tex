@@ -219,7 +219,7 @@
   \hfill \\
   SELECT b.title\\
   FROM Books b\\
-  WHERE NOT EXISTS( SELECT ...
+  WHERE NOT EXISTS( SELECT ...\\
   FROM Books o \\
   WHERE b.year $<$ o.year);
 \end{frame}
