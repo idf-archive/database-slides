@@ -34,160 +34,65 @@
 % Title Data. We keep it after \begin{document} 
 % to enable editing text in BaKoMa TeX Word.
 
-\title{Presentation Title}
-\subtitle{Presentation Subtitle}
+\title{Relational Calculus}
 
-% Use the \inst command to identify several affiliations.
-\author{F.~Author\inst{1} \and S.~Another\inst{2}}
-\institute{
-  \inst{1}%
-  Department of Computer Science\\
-  University of Somewhere
-  \and
-  \inst{2}%
-  Department of Theoretical Philosophy\\
-  University of Elsewhere}
+\date[WI 2016]{CSE 132a Winter 2016}
 
-\date[TUG 2005]{Annual TUG Conference, 2005}
-
-\subject{Desktop Publishing} % Should be passed to PDF [YNI]
+\subject{Relational Calculus} % Should be passed to PDF [YNI]
 
 \begin{frame}
   \titlepage
 \end{frame}
 
-\begin{frame}
-  \frametitle{Table of Contents}
-  \tableofcontents
-  Click TeX Refresh (F5) to update table of contents.
-\end{frame}
+\section{Relational Calculus Overview}
 
-\section{Introduction}
-
-\subsection{General Features}
+\subsection{Symbols}
 
 \begin{frame}
-  \frametitle{Presentation Outline}
-  \framesubtitle{Using sectioning commands}
+  \frametitle{Existential and Universal Quantifiers}
 
-  You can use \texttt{\textbackslash section}
-  and \texttt{\textbackslash subsection} commands
-  to define outline of your presentation.
+  $\textcolor{red}{\exists b \in \text{Books} [...]}$\\
+  There exists a book b where this condition holds.\\
 
-  These commands must be appeared between frames.
-  Insert they manually in text source window. 
+  $\textcolor{red}{\exists b \in \text{Books} [\forall c \in \text{Customers} [ \exists p \in \text{Purchases} [...] ] ]}$\\
+  There exists a book, where for each customer, there exists a purchase where this condition holds.\\
 
-  To take correct outline under \TeX-Word click F5 key.
-
+  Analagous to "FROM Books b WHERE ..." in SQL.
 \end{frame}
 
 \begin{frame}
-  \frametitle{Simple Overlays}
-  \framesubtitle{Using pause command}
+  \frametitle{Tuples}
 
-  The easiest way to create overlays is in using 
-  the \texttt{\textbackslash pause} command.
-  Like following ...
+  Tuples are like rows in the database\\
 
-  \begin{itemize}
-    \item This item is before \texttt{pause} (look source window)\pause
-    \item If you don't see overlay read explanation below ...
-  \end{itemize}
+  $\exists b \in \text{Books} [\textcolor{red}{b(\text{title})} ...]$\\
 
-  Overlay expansion may be enabled/disabled 
-  in dialog opened by `Insert/Document Properties' menu command.
+  $\exists b \in \text{Books} [\forall c \in \text{Customers} [ \exists p \in \text{Purchases} [ $
+  $\textcolor{red}{c(\text{customerid}) ... p(\text{customerid}) ... p(\text{bookid}) ... b(\text{bookid})}] ] ]$\\
 
-  `\textit{Overlays Mode=\textbf{Handout}}' 
-   -- disables overlay expansion.
-
-  It is default setting of this template, 
-  because this mode is convenient at
-  first stage of developing slides.
-
-  `\textit{Overlays Mode=\textbf{Beamer}}' 
-   -- enables overlay expansion.
-
-  It is useful at final editing 
-  for handling overlays and for generating 
-  final slides in form of PDF file.
-
+  Similar to b.title and p.price
 \end{frame}
-
-\subsection{Advanced Features}
 
 \begin{frame}
-  \frametitle{Advanced Overlays}
-  \framesubtitle{Using more flexible overlay specifications}
+  \frametitle{Additional Operators}
 
-  Beamer includes more ways for handling 
-  overlays\dots
-  \begin{itemize}
-  \item using the \texttt{pause} command:
-    \begin{itemize}
-    \item
-      First item.
-      \pause
-    \item    
-      Second item.
-    \end{itemize}
-  \item
-    using overlay specifications:
-    \begin{itemize}
-    \item<3->
-      First item.
-    \item<4->
-      Second item.
-    \end{itemize}
-  \item
-    using the general \texttt{uncover} command:
-    \begin{itemize}
-      \uncover<5->{\item
-        First item.}
-      \uncover<6->{\item
-        Second item.}
-    \end{itemize}
-  \end{itemize}
+  Operators: $\land, \lor, =, \neq, \rightarrow, <, >, \leq, \geq$\\
 
-  To learn more about Beamer package 
-  read original documentation.
+  $\exists b \in \text{Books} [b(\text{title}) \textcolor{red}{= \text{'Twilight'}}]$\\
 
+  $\exists b \in \text{Books} [\forall c \in \text{Customers} [ \exists p \in \text{Purchases} [$
+  $c(\text{customerid}) \textcolor{red}{=} p(\text{customerid}) \textcolor{red}{\land}  p(\text{bookid}) \textcolor{red}{=} b(\text{bookid})] ] ]$\\
 \end{frame}
-
-\section{Main Talk}
-
-\subsection{It is only beginning}
 
 \begin{frame}
-  \frametitle{Blank Frame}
-  Body.
+  \frametitle{SELECT Analogy}
+  $\textcolor{red}{\{r:bookid \mid }\exists b \in \text{Books} [b(\text{title}) = \text{'Twilight'}$ \\
+  $\textcolor{red}{\land r(\text{bookid}) = b(\text{bookid})}]\textcolor{red}{\}}$\\
+
+  $\textcolor{red}{\{ r:title \mid }\exists b \in \text{Books} [\forall c \in \text{Customers} [ \exists p \in \text{Purchases} [ $\\
+  $c(\text{customerid}) = p(\text{customerid}) \land  p(\text{bookid}) = b(\text{bookid})$ \\
+  $] ] \textcolor{red}{ \land b(title) = r(title)]\}}$
 \end{frame}
-
-\section*{Conclusion}
-
-\begin{frame}
-  \frametitle{Conclusion}
-
-  Clicking right mouse button 
-  (press+release without intermediate mouse moving) 
-  displays context menu
-  which have two commands specific for beamer package: 
-
-  \begin{itemize}
-  \item
-     \alert{Delete the Frame} -- removes current frame.
-  \item
-     \alert{Duplicate the Frame} -- easiest frame populating.
-  \end{itemize}
-
-  The button \includegraphics[height=0.75em]{slide.bmp} 
-  at left edge of text 
-  tool bar lets you insert blank slide in your presentation.
-
-\end{frame}
-
 
 \end{document}
-
-
-
 
