@@ -1,6 +1,7 @@
 %&latex
 
 \documentclass{beamer}
+\usepackage{verbatim}
 \usefonttheme{serif}
 % Customize slide appearance
 \mode<presentation>
@@ -8,6 +9,7 @@
   \usetheme{Warsaw}
   \setbeamercovered{transparent}
 }
+
 
 \usepackage[english]{babel}
 \usepackage{times}
@@ -36,7 +38,7 @@
 
 \title{Relational Calculus}
 
-\date[WI 2016]{CSE 132a Winter 2016}
+\date[WI 2016]{CSE 132A Winter 2016. 22 Jan 2016}
 
 \subject{Relational Calculus} % Should be passed to PDF [YNI]
 
@@ -45,16 +47,17 @@
 \end{frame}
 
 \section{Relational Calculus Overview}
-
 \begin{frame}
   \frametitle{Existential and Universal Quantifiers}
   $\textcolor{red}{\exists b \in \text{Books} [...]}$\\
   There exists a book b where this condition holds.\\
-  \hfill \\
+  Analagous to "FROM Books b WHERE ..." in SQL.
+  
+  \hfill 
+  
   $\textcolor{red}{\exists b \in \text{Books} [\forall c \in \text{Customers} [ \exists p \in \text{Purchases} [...] ] ]}$\\
   There exists a book, where for each customer, there exists a purchase where this condition holds.\\
-  \hfill \\
-  Analagous to "FROM Books b WHERE ..." in SQL.
+  \hfill 
 \end{frame}
 
 \begin{frame}
@@ -70,24 +73,63 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Additional Operators}
-  Operators: $\land, \lor, =, \neq, \rightarrow, <, >, \leq, \geq$\\
+  \frametitle{SELECT Analogy}
+  $\textcolor{red}{\{r:\text{bookid} \mid }\exists b \in \text{Books} [b(\text{title})
+= \text{'Twilight'}$ \\
+  $\textcolor{red}{\land r(\text{bookid}) = b(\text{bookid})}]\textcolor{red}{\}}$\\
   \hfill \\
-  $\exists b \in \text{Books} [b(\text{title}) \textcolor{red}{= \text{'Twilight'}}]$\\
-  \hfill \\
-  $\exists b \in \text{Books} [\forall c \in \text{Customers} [ \exists p \in \text{Purchases} [$
-  $c(\text{customerid}) \textcolor{red}{=} p(\text{customerid}) \textcolor{red}{\land}  p(\text{bookid}) \textcolor{red}{=} b(\text{bookid})] ] ]$\\
-  \hfill \\
+  $\textcolor{red}{\{ r:\text{title} \mid }\exists b \in \text{Books} [\forall c \in
+\text{Customers} [ \exists p \in \text{Purchases} [ $\\
+  $c(\text{customerid}) = p(\text{customerid}) \land  p(\text{bookid}) = b(\text{bookid})$
+\\
+  $] ] \textcolor{red}{ \land b(\text{title}) = r(\text{title})]\}}$
 \end{frame}
 
 \begin{frame}
-  \frametitle{SELECT Analogy}
-  $\textcolor{red}{\{r:\text{bookid} \mid }\exists b \in \text{Books} [b(\text{title}) = \text{'Twilight'}$ \\
-  $\textcolor{red}{\land r(\text{bookid}) = b(\text{bookid})}]\textcolor{red}{\}}$\\
-  \hfill \\
-  $\textcolor{red}{\{ r:\text{title} \mid }\exists b \in \text{Books} [\forall c \in \text{Customers} [ \exists p \in \text{Purchases} [ $\\
-  $c(\text{customerid}) = p(\text{customerid}) \land  p(\text{bookid}) = b(\text{bookid})$ \\
-  $] ] \textcolor{red}{ \land b(\text{title}) = r(\text{title})]\}}$
+  \frametitle{Formal Definition}
+  The general form of the relational calculus is:
+  $$
+  \{t | P(t)\}
+  $$
+  $t$ is a free variable. $P$ is the formula. A tuple variable is a \textit{free
+variable} unless it is quantified by $\exists, \forall$. If quantified, it is \textit{bound
+variable}. 
+  $$
+  t \in Purchases \wedge c \in Customers [t(custID)=c(custID)]
+  $$
+\end{frame}
+
+\begin{frame}
+  \frametitle{Atoms}
+  \begin{itemize}
+  \item $t \in R$, where $t$ is a tuple variable, $R$ is a relation
+  \item $t(x) \Theta u(y)$, where $t, u$ are tuple variables, $x, y$ are the attributes. $\Theta$ is comparison operator ($<, \leq, =, \neq, \geq, >$).
+  \item $t(x) \Theta c$, where $c$ is a constant. 
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Formulae}
+  \begin{itemize}
+  \item An atom $P$ is a formula
+  \item $\neg P, P_1 \wedge P_2, P_1 \vee P_2$
+  \item $P_1 \rightarrow P_2$
+  \item $P(t)$ contains a free tuple $t$, and.
+  \begin{align*}
+  &\exits t \in R [P(t)]\\
+  &\forall t \in R [P(t)]
+  \end{align*}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Equivalence}
+  \begin{itemize}
+  \item $P_1 \wedge P_2 \equiv \neg (\neg P_1 \vee \neg P_2)$
+  \item $\forall t \in R[P(t)] \equiv \neg \exits t \in R [\neg P(t)$]
+  \item $P_1 \rightarrow P_2 \equiv \neg P_1 \vee P_2$
+  \end{itemize}
 \end{frame}
 
 \section{Examples}
@@ -95,11 +137,14 @@
 \begin{frame}
   \frametitle{Example 1}
     \framesubtitle{SQL to Relational Calculus}
+  Find books (show their titles) written by 'EDMUND MORGAN' since year 1990.\\
+  \hfill \\  
   SELECT title\\
   FROM Books\\
   WHERE author = 'EDMUND MORGAN'\\
   AND year $>=$ 1990;\\
 \end{frame}
+
 \begin{frame}
   \frametitle{Example 1}
     \framesubtitle{SQL to Relational Calculus}
@@ -219,7 +264,7 @@
   \hfill \\
   SELECT b.title\\
   FROM Books b\\
-  WHERE NOT EXISTS( SELECT ...\\
+  WHERE NOT EXISTS( SELECT\\
   FROM Books o \\
   WHERE b.year $<$ o.year);
 \end{frame}
@@ -233,7 +278,7 @@
   \hfill \\
   SELECT b.title\\
   FROM Books b\\
-  WHERE NOT EXISTS( SELECT *\\
+  WHERE NOT EXISTS( SELECT \\
   FROM Books o\\
   WHERE b.year $<$ o.year);
 \end{frame}
