@@ -46,52 +46,196 @@
 
 \section{Relational Calculus Overview}
 
-\subsection{Symbols}
-
 \begin{frame}
   \frametitle{Existential and Universal Quantifiers}
-
   $\textcolor{red}{\exists b \in \text{Books} [...]}$\\
   There exists a book b where this condition holds.\\
-
+  \hfill \\
   $\textcolor{red}{\exists b \in \text{Books} [\forall c \in \text{Customers} [ \exists p \in \text{Purchases} [...] ] ]}$\\
   There exists a book, where for each customer, there exists a purchase where this condition holds.\\
-
+  \hfill \\
   Analagous to "FROM Books b WHERE ..." in SQL.
 \end{frame}
 
 \begin{frame}
   \frametitle{Tuples}
-
-  Tuples are like rows in the database\\
-
+  Tuples are like rows in a database\\
+  \hfill \\
   $\exists b \in \text{Books} [\textcolor{red}{b(\text{title})} ...]$\\
-
+  \hfill \\
   $\exists b \in \text{Books} [\forall c \in \text{Customers} [ \exists p \in \text{Purchases} [ $
   $\textcolor{red}{c(\text{customerid}) ... p(\text{customerid}) ... p(\text{bookid}) ... b(\text{bookid})}] ] ]$\\
-
+  \hfill \\
   Similar to b.title and p.price
 \end{frame}
 
 \begin{frame}
   \frametitle{Additional Operators}
-
   Operators: $\land, \lor, =, \neq, \rightarrow, <, >, \leq, \geq$\\
-
+  \hfill \\
   $\exists b \in \text{Books} [b(\text{title}) \textcolor{red}{= \text{'Twilight'}}]$\\
-
+  \hfill \\
   $\exists b \in \text{Books} [\forall c \in \text{Customers} [ \exists p \in \text{Purchases} [$
   $c(\text{customerid}) \textcolor{red}{=} p(\text{customerid}) \textcolor{red}{\land}  p(\text{bookid}) \textcolor{red}{=} b(\text{bookid})] ] ]$\\
+  \hfill \\
 \end{frame}
 
 \begin{frame}
   \frametitle{SELECT Analogy}
-  $\textcolor{red}{\{r:bookid \mid }\exists b \in \text{Books} [b(\text{title}) = \text{'Twilight'}$ \\
+  $\textcolor{red}{\{r:\text{bookid} \mid }\exists b \in \text{Books} [b(\text{title}) = \text{'Twilight'}$ \\
   $\textcolor{red}{\land r(\text{bookid}) = b(\text{bookid})}]\textcolor{red}{\}}$\\
-
-  $\textcolor{red}{\{ r:title \mid }\exists b \in \text{Books} [\forall c \in \text{Customers} [ \exists p \in \text{Purchases} [ $\\
+  \hfill \\
+  $\textcolor{red}{\{ r:\text{title} \mid }\exists b \in \text{Books} [\forall c \in \text{Customers} [ \exists p \in \text{Purchases} [ $\\
   $c(\text{customerid}) = p(\text{customerid}) \land  p(\text{bookid}) = b(\text{bookid})$ \\
-  $] ] \textcolor{red}{ \land b(title) = r(title)]\}}$
+  $] ] \textcolor{red}{ \land b(\text{title}) = r(\text{title})]\}}$
+\end{frame}
+
+\section{Examples}
+
+\begin{frame}
+  \frametitle{Example 1}
+    \framesubtitle{SQL to Relational Calculus}
+  SELECT title\\
+  FROM Books\\
+  WHERE author = 'EDMUND MORGAN'\\
+  AND year $>=$ 1990;\\
+\end{frame}
+\begin{frame}
+  \frametitle{Example 1}
+    \framesubtitle{SQL to Relational Calculus}
+  SELECT title\\
+  FROM Books\\
+  WHERE author = 'EDMUND MORGAN'\\
+  AND year $>=$ 1990;\\
+  \hfill \\
+  \textcolor{red}{$\{r:\text{title} \mid ... \}$}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Example 1}
+    \framesubtitle{SQL to Relational Calculus}
+  SELECT title\\
+  FROM Books\\
+  WHERE author = 'EDMUND MORGAN'\\
+  AND year $>=$ 1990;\\
+  \hfill \\
+  $\{r:\text{title} \mid \textcolor{red}{\exists b \in \text{Books} [ ... ]} \}$
+\end{frame}
+
+\begin{frame}
+  \frametitle{Example 1}
+    \framesubtitle{SQL to Relational Calculus}
+  SELECT title\\
+  FROM Books\\
+  WHERE author = 'EDMUND MORGAN'\\
+  AND year $>=$ 1990;\\
+  \hfill \\
+  $\{r:\text{title} \mid \exists b \in \text{Books} [ \textcolor{red}{b(\text{author}) = \text{'EDMUND MORGAN'} \land b(\text{year}) \geq 1990} ] \}$\\
+  DONE?
+\end{frame}
+
+\begin{frame}
+  \frametitle{Example 1}
+    \framesubtitle{SQL to Relational Calculus}
+  SELECT title\\
+  FROM Books\\
+  WHERE author = 'EDMUND MORGAN'\\
+  AND year $>=$ 1990;\\
+  \hfill \\
+  $\{r:\text{title} \mid \exists b \in \text{Books} [ b(\text{author}) = \text{'EDMUND MORGAN'} \land b(\text{year}) \geq 1990$\\
+  $\textcolor{red}{\land r(\text{title}) = b(\text{title})}] \}$\\
+\end{frame}
+
+\begin{frame}
+  \frametitle{Example 2}
+    \framesubtitle{Relational Calculus to SQL}
+  What are the titles of the newest books?\\
+\end{frame}
+
+\begin{frame}
+  \frametitle{Example 2}
+    \framesubtitle{Relational Calculus to SQL}
+  What are the titles of the newest books?\\
+  \hfill \\
+  \textcolor{red}{$\{r:\text{title} \mid ... \}$}
+\end{frame}
+\begin{frame}
+  \frametitle{Example 2}
+    \framesubtitle{Relational Calculus to SQL}
+  What are the titles of the newest books?\\
+  \hfill \\
+  $\{r:\text{title} \mid \textcolor{red}{\exists b \in \text{Books} [...]} \}$
+\end{frame}
+\begin{frame}
+  \frametitle{Example 2}
+    \framesubtitle{Relational Calculus to SQL}
+  What are the titles of the newest books?\\
+  \hfill \\
+  $\{r:\text{title} \mid \exists b \in \text{Books} [ \textcolor{red}{\forall o \in \text{Books} [...]} ] \}$
+\end{frame}
+\begin{frame}
+  \frametitle{Example 2}
+    \framesubtitle{Relational Calculus to SQL}
+  What are the titles of the newest books?\\
+  \hfill \\
+  $\{r:\text{title} \mid \exists b \in \text{Books} [ \forall o \in \text{Books} [ \textcolor{red}{b(\text{year}) \geq o(\text{year})}]] \}$\\
+  DONE?
+\end{frame}
+\begin{frame}
+  \frametitle{Example 2}
+    \framesubtitle{Relational Calculus to SQL}
+  What are the titles of the newest books?\\
+  \hfill \\
+  $\{r:\text{title} \mid \exists b \in \text{Books} [ \forall o \in \text{Books} [ b(\text{year}) \geq o(\text{year})]$\\
+  $\land \textcolor{red}{b(\text{title}) = r(\text{title})}] \}$
+\end{frame}
+\begin{frame}
+  \frametitle{Example 2}
+    \framesubtitle{Relational Calculus to SQL}
+  What are the titles of the newest books?\\
+  \hfill \\
+  $\{r:\text{title} \mid \exists b \in \text{Books} [ \textcolor{red}{\neg\exists} o \in \text{Books} [ b(\text{year}) \textcolor{red}{<} o(\text{year})]$\\
+  $\land b(\text{title}) = r(\text{title})] \}$
+\end{frame}
+\begin{frame}
+  \frametitle{Example 2}
+    \framesubtitle{Relational Calculus to SQL}
+  What are the titles of the newest books?\\
+  \hfill \\
+  $\{r:\text{title} \mid \exists b \in \text{Books} [ \neg\exists o \in \text{Books} [ b(\text{year}) < o(\text{year})]$\\
+  $\land b(\text{title}) = r(\text{title})] \}$\\
+  \hfill \\
+  SELECT b.title\\
+  FROM Books b\\
+  WHERE ...
+\end{frame}
+\begin{frame}
+  \frametitle{Example 2}
+    \framesubtitle{Relational Calculus to SQL}
+  What are the titles of the newest books?\\
+  \hfill \\
+  $\{r:\text{title} \mid \exists b \in \text{Books} [ \neg\exists o \in \text{Books} [ b(\text{year}) < o(\text{year})]$\\
+  $\land b(\text{title}) = r(\text{title})] \}$\\
+  \hfill \\
+  SELECT b.title\\
+  FROM Books b\\
+  WHERE NOT EXISTS( SELECT ...
+  FROM Books o \\
+  WHERE b.year $<$ o.year);
+\end{frame}
+\begin{frame}
+  \frametitle{Example 2}
+    \framesubtitle{Relational Calculus to SQL}
+  What are the titles of the newest books?\\
+  \hfill \\
+  $\{r:\text{title} \mid \exists b \in \text{Books} [ \neg\exists o \in \text{Books} [ b(\text{year}) < o(\text{year})]$\\
+  $\land b(\text{title}) = r(\text{title})] \}$\\
+  \hfill \\
+  SELECT b.title\\
+  FROM Books b\\
+  WHERE NOT EXISTS( SELECT *\\
+  FROM Books o\\
+  WHERE b.year $<$ o.year);
 \end{frame}
 
 \end{document}
