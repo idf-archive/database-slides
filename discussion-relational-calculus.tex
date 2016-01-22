@@ -1,7 +1,7 @@
 %&latex
 
 \documentclass{beamer}
-\usepackage{verbatim}
+\usepackage{listings}
 \usefonttheme{serif}
 % Customize slide appearance
 \mode<presentation>
@@ -93,9 +93,13 @@
   $$
   $t$ is a free variable. $P$ is the formula. A tuple variable is a \textit{free
 variable} unless it is quantified by $\exists, \forall$. If quantified, it is \textit{bound
-variable}. 
+variable}. Free variable are 
+\begin{itemize}
+\item not in scope of any quantifier
+\item free variables are the “parameters” of the formula
+\end{itemize}
   $$
-  t \in Purchases \wedge c \in Customers [t(custID)=c(custID)]
+  t \in Purchases \wedge \exists c \in Customers [t(custid)=c(custid)]
   $$
 \end{frame}
 
@@ -111,7 +115,7 @@ variable}.
 \begin{frame}
   \frametitle{Formulae}
   \begin{itemize}
-  \item An atom $P$ is a formula
+  \item An atom $P$ is a formula 
   \item $\neg P, P_1 \wedge P_2, P_1 \vee P_2$
   \item $P_1 \rightarrow P_2$
   \item $P(t)$ contains a free tuple $t$, and.
@@ -132,8 +136,25 @@ variable}.
   \end{itemize}
 \end{frame}
 
-\section{Examples}
+\begin{frame}
+  \frametitle{Limitations}
+  \framesubtitle{Aggregation}
+  Note that the tuple relational calculus does not have any equivalent of the aggregate operation, but it can be extended to support aggregation. Extending the tuple relational calculus to handle arithmetic expressions is straightforward.
+\end{frame}
 
+\section{Examples}
+\begin{frame}
+  \frametitle{Example}
+    \framesubtitle{Schema}
+Consider the following database schema for a BOOKSTORE database:
+\begin{itemize}
+\item Books (bookid, title, author, year)
+\item Customers (customerid, name, email)
+\item Purchases (customerid, bookid, year)
+\item Reviews (customerid, bookid, rating)
+\item Pricing (bookid, format, price)
+\end{itemize}
+\end{frame}
 \begin{frame}
   \frametitle{Example 1}
     \framesubtitle{SQL to Relational Calculus}
@@ -242,7 +263,7 @@ variable}.
   $\{r:\text{title} \mid \exists b \in \text{Books} [ \textcolor{red}{\neg\exists} o \in \text{Books} [ b(\text{year}) \textcolor{red}{<} o(\text{year})]$\\
   $\land b(\text{title}) = r(\text{title})] \}$
 \end{frame}
-\begin{frame}
+\begin{frame}[fragile]
   \frametitle{Example 2}
     \framesubtitle{Relational Calculus to SQL}
   What are the titles of the newest books?\\
@@ -250,11 +271,14 @@ variable}.
   $\{r:\text{title} \mid \exists b \in \text{Books} [ \neg\exists o \in \text{Books} [ b(\text{year}) < o(\text{year})]$\\
   $\land b(\text{title}) = r(\text{title})] \}$\\
   \hfill \\
-  SELECT b.title\\
-  FROM Books b\\
-  WHERE ...
+\begin{lstlisting}
+SELECT b.title
+FROM Books b
+WHERE ...
+\end{lstlisting}
 \end{frame}
-\begin{frame}
+
+\begin{frame}[fragile]
   \frametitle{Example 2}
     \framesubtitle{Relational Calculus to SQL}
   What are the titles of the newest books?\\
@@ -262,26 +286,135 @@ variable}.
   $\{r:\text{title} \mid \exists b \in \text{Books} [ \neg\exists o \in \text{Books} [ b(\text{year}) < o(\text{year})]$\\
   $\land b(\text{title}) = r(\text{title})] \}$\\
   \hfill \\
-  SELECT b.title\\
-  FROM Books b\\
-  WHERE NOT EXISTS( SELECT\\
-  FROM Books o \\
-  WHERE b.year $<$ o.year);
+\begin{lstlisting}
+SELECT b.title
+FROM Books b
+WHERE NOT EXISTS (SELECT 
+  FROM Books o
+  WHERE b.year < o.year
+);
+\end{lstlisting}
 \end{frame}
-\begin{frame}
-  \frametitle{Example 2}
-    \framesubtitle{Relational Calculus to SQL}
-  What are the titles of the newest books?\\
-  \hfill \\
-  $\{r:\text{title} \mid \exists b \in \text{Books} [ \neg\exists o \in \text{Books} [ b(\text{year}) < o(\text{year})]$\\
-  $\land b(\text{title}) = r(\text{title})] \}$\\
-  \hfill \\
-  SELECT b.title\\
-  FROM Books b\\
-  WHERE NOT EXISTS( SELECT \\
-  FROM Books o\\
-  WHERE b.year $<$ o.year);
+
+
+\begin{frame}[fragile]
+  \frametitle{Exercise 1}
+  Find books (show their titles, authors and prices) that are on `CIVIL WAR' (i.e., the title field contains `CIVIL WAR'), available in `AUDIO' format. 
+
+\begin{align*}
+\{t: &title, author, price| \exists b \in Books \\
+&[(b(title)=t(title)\wedge b(author)=t(title) \wedge b(price)=t(price)) \wedge \\
+& b(title)='\%CIVIL WAR\%' \wedge \\
+& \exists p \in Pricing [p(bookid)=b(bookid) \wedge p(format)='AUDIO']\\
+]\}
+\end{align*}
 \end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Exercise 2}
+Find the set of books purchased by  `JOHN CHAMBERS'
+
+\begin{align*}
+\{t&|t\in Books\wedge \exists p \in Purchases, \exists c \in Customers \\
+&[t(bookid)=p(bookid) \wedge c(customerid)=p(customerid) \wedge \\
+&c(name)=\text{`JOHN CHAMERS'}\\
+]\}
+\end{align*}
+
+We don't need to get the subset of columns of Books $t$. 
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Exercise 3}
+Find customers (show their names and email addresses) who purchased more than one book in year 2003.
+
+* Do it without aggregation. 
+
+\begin{align*}
+\{t: &name, email| \exists c \in Customers \\
+&[(t(name)=c(name)\wedge t(email)=c(email)) \wedge \\
+& \exists p_1,p_2 \in Purchase [p_1\neq p_2 \wedge p_1(customerid)=c(customerid) \wedge \\ 
+&\quad p_2(customerid=c(customerid)) \wedge \\
+&\quad p_1(year)=2003 \wedge p_2(year)=2003]\\
+]\}
+\end{align*}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Exercise onward}
+The schema about battleships and the battles they fought in:
+\begin{itemize}
+\item Ships(name, yearLaunched, country, numGuns, gunSize, displacement)
+\item Battles(ship, battleName, result)
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Exercise 4}
+Which battleships launched before 1930 had 16-inch guns? List their names, their country, and the number of guns they carried.
+
+\begin{align*}
+\{t:& names, country, numGuns|\exists s\in Ships[ \\
+& t(name)=s(name) \wedge t(country)=s(country) \\ 
+& \wedge  t(numGuns)=s(numGuns)\wedge \\
+&s(yearLaunched)<1930 \wedge s(gunSize)=16\\
+]\}
+\end{align*}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Exercise 5}
+Which battleship(s) had the guns with the largest gun size?
+
+\begin{align*}
+\{t&| t\in Ships \wedge \\ 
+&\forall s\in Ships [t(gunSize)\geq s(gunSize)\\
+]\}
+\end{align*}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Exercise 6}
+Which battleships had the guns with the second largest gun size. More precisely, find the ships whose gun size was exceeded by only one gun size, no matter how many other ships had that larger gun size. 
+
+\begin{align*}
+\{t&| t\in Ships \wedge \\ 
+&\exists m \in Ships \Big[\forall s\in Ships [m(gunSize)\geq s(gunSize)] \wedge  \\
+& \quad t(gunSize) < m(gunSize) \wedge \forall s' \in Ships [s'(gunSize)< m(gunSize)  \\
+& \quad \rightarrow t(gunSize)\geq s'(gunSize)]\\
+\Big]\}
+\end{align*}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Exercise 7}
+List all the pairs of countries that fought each other in battles. List them with the country that comes first in alphabetical order first\footnotemark \footnotetext[1]{may contains duplicated entries }.
+
+\begin{align*}
+\{t:&c_1, c_2| t(c_1)<t(c_2) \wedge \\ 
+&\exists s, s'\in Ships, \exists b, b' \in Battles \Big[\\
+& s(country)=t(c_1) \wedge b(ship) =s(name) \wedge \\
+& s'(country)=t(c_2) \wedge b'(ship) =s'(name) \wedge \\
+& b(battleName) = b'(battleName) \\
+\Big]\}
+\end{align*}
+\end{frame}
+
+\section{Reference}
+\begin{frame}[fragile]
+\frametitle{Reference}
+\begin{enumerate}
+\item ``\textit{Database Systems Concepts}'' by Silberschatz, Korth and Sudarshan, 6th edition, McGraw-Hill.
+\end{enumerate}
+\begin{align*}
+
+\end{align*}
+
+\end{frame}
+
+\end{document}
 
 \end{document}
 
