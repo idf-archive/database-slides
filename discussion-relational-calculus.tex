@@ -258,6 +258,37 @@ WHERE NOT EXISTS (SELECT *
 \end{lstlisting}
 \end{frame}
 
+\begin{frame}[fragile]
+\frametitle{Example 3}
+What are the titles of the books which have been purchased by every Customer?
+
+\begin{align*}
+\{r:&title \mid \exists b \in Books, \forall c \in Customers, \exists p \in \text{Purchases} [\\
+  &c(customerid) = p(customerid) \land  p(bookid) = b(bookid) \\
+  &\land b(title) = r(title)\\
+]\}
+\end{align*}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Example 3}
+\begin{align*}
+\{r:&title \mid \exists b \in Books, \neg \exists c \in Customers, \neg \exists p \in \text{Purchases} [\\
+  &c(customerid) = p(customerid) \land  p(bookid) = b(bookid) \\
+  &\land b(title) = r(title)]\}
+\end{align*}
+\begin{lstlisting}
+SELECT b.title
+FROM Books b
+WHERE NOT EXISTS (SELECT *
+  FROM Customers c
+  WHERE NOT EXISTS (SELECT *
+   FROM Purchases p
+   WHERE c.customerid = p.customerid AND
+     p.bookid = b.bookid));
+\end{lstlisting}
+\end{frame}
 
 \begin{frame}[fragile]
   \frametitle{Exercise 1}
@@ -364,18 +395,6 @@ List all the pairs of countries that fought each other in battles. List them wit
 \end{align*}
 \end{frame}
 
-\begin{frame}[fragile]
-\frametitle{Exercise 8}
-What are the titles of the books which have been purchased by every Customer?
-
-\begin{align*}
-\{r:&title \mid \exists b \in Books, \forall c \in Customers, \exists p \in \text{Purchases} [\\
-  &c(customerid) = p(customerid) \land  p(bookid) = b(bookid) \\
-  &\land b(title) = r(title)\\
-]\}
-\end{align*}
-
-\end{frame}
 \section{Reference}
 \begin{frame}[fragile]
 \frametitle{Reference}
