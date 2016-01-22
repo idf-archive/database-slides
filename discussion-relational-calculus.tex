@@ -48,44 +48,6 @@
 
 \section{Relational Calculus Overview}
 \begin{frame}
-  \frametitle{Existential and Universal Quantifiers}
-  $\textcolor{red}{\exists b \in \text{Books} [...]}$\\
-  There exists a book b where this condition holds.\\
-  Analagous to "FROM Books b WHERE ..." in SQL.
-  
-  \hfill 
-  
-  $\textcolor{red}{\exists b \in \text{Books} [\forall c \in \text{Customers} [ \exists p \in \text{Purchases} [...] ] ]}$\\
-  There exists a book, where for each customer, there exists a purchase where this condition holds.\\
-  \hfill 
-\end{frame}
-
-\begin{frame}
-  \frametitle{Tuples}
-  Tuples are like rows in a database\\
-  \hfill \\
-  $\exists b \in \text{Books} [\textcolor{red}{b(\text{title})} ...]$\\
-  \hfill \\
-  $\exists b \in \text{Books} [\forall c \in \text{Customers} [ \exists p \in \text{Purchases} [ $
-  $\textcolor{red}{c(\text{customerid}) ... p(\text{customerid}) ... p(\text{bookid}) ... b(\text{bookid})}] ] ]$\\
-  \hfill \\
-  Similar to b.title and p.price
-\end{frame}
-
-\begin{frame}
-  \frametitle{SELECT Analogy}
-  $\textcolor{red}{\{r:\text{bookid} \mid }\exists b \in \text{Books} [b(\text{title})
-= \text{'Twilight'}$ \\
-  $\textcolor{red}{\land r(\text{bookid}) = b(\text{bookid})}]\textcolor{red}{\}}$\\
-  \hfill \\
-  $\textcolor{red}{\{ r:\text{title} \mid }\exists b \in \text{Books} [\forall c \in
-\text{Customers} [ \exists p \in \text{Purchases} [ $\\
-  $c(\text{customerid}) = p(\text{customerid}) \land  p(\text{bookid}) = b(\text{bookid})$
-\\
-  $] ] \textcolor{red}{ \land b(\text{title}) = r(\text{title})]\}}$
-\end{frame}
-
-\begin{frame}
   \frametitle{Formal Definition}
   The general form of the relational calculus is:
   $$
@@ -120,7 +82,7 @@ variable}. Free variable are
   \item $P_1 \rightarrow P_2$
   \item $P(t)$ contains a free tuple $t$, and.
   \begin{align*}
-  &\exits t \in R [P(t)]\\
+  &\exists t \in R [P(t)]\\
   &\forall t \in R [P(t)]
   \end{align*}
   \end{itemize}
@@ -131,7 +93,7 @@ variable}. Free variable are
   \frametitle{Equivalence}
   \begin{itemize}
   \item $P_1 \wedge P_2 \equiv \neg (\neg P_1 \vee \neg P_2)$
-  \item $\forall t \in R[P(t)] \equiv \neg \exits t \in R [\neg P(t)$]
+  \item $\forall t \in R[P(t)] \equiv \neg \exists t \in R [\neg P(t)$]
   \item $P_1 \rightarrow P_2 \equiv \neg P_1 \vee P_2$
   \end{itemize}
 \end{frame}
@@ -289,7 +251,7 @@ WHERE ...
 \begin{lstlisting}
 SELECT b.title
 FROM Books b
-WHERE NOT EXISTS (SELECT 
+WHERE NOT EXISTS (SELECT *
   FROM Books o
   WHERE b.year < o.year
 );
@@ -302,10 +264,10 @@ WHERE NOT EXISTS (SELECT
   Find books (show their titles, authors and prices) that are on `CIVIL WAR' (i.e., the title field contains `CIVIL WAR'), available in `AUDIO' format. 
 
 \begin{align*}
-\{t: &title, author, price| \exists b \in Books \\
-&[(b(title)=t(title)\wedge b(author)=t(title) \wedge b(price)=t(price)) \wedge \\
+\{t: &title, author, price| \exists b \in Books, \exists p \in Pricing \\
+&[(b(title)=t(title)\wedge b(author)=t(title) \wedge p(price)=t(price)) \wedge \\
 & b(title)='\%CIVIL WAR\%' \wedge \\
-& \exists p \in Pricing [p(bookid)=b(bookid) \wedge p(format)='AUDIO']\\
+& p(bookid)=b(bookid) \wedge p(format)='AUDIO'\\
 ]\}
 \end{align*}
 \end{frame}
@@ -334,7 +296,7 @@ Find customers (show their names and email addresses) who purchased more than on
 \{t: &name, email| \exists c \in Customers \\
 &[(t(name)=c(name)\wedge t(email)=c(email)) \wedge \\
 & \exists p_1,p_2 \in Purchase [p_1\neq p_2 \wedge p_1(customerid)=c(customerid) \wedge \\ 
-&\quad p_2(customerid=c(customerid)) \wedge \\
+&\quad p_2(customerid)=c(customerid) \wedge \\
 &\quad p_1(year)=2003 \wedge p_2(year)=2003]\\
 ]\}
 \end{align*}
@@ -402,19 +364,24 @@ List all the pairs of countries that fought each other in battles. List them wit
 \end{align*}
 \end{frame}
 
+\begin{frame}[fragile]
+\frametitle{Exercise 8}
+What are the titles of the books which have been purchased by every Customer?
+
+\begin{align*}
+\{r:&title \mid \exists b \in Books, \forall c \in Customers, \exists p \in \text{Purchases} [\\
+  &c(customerid) = p(customerid) \land  p(bookid) = b(bookid) \\
+  &\land b(title) = r(title)\\
+]\}
+\end{align*}
+
+\end{frame}
 \section{Reference}
 \begin{frame}[fragile]
 \frametitle{Reference}
 \begin{enumerate}
 \item ``\textit{Database Systems Concepts}'' by Silberschatz, Korth and Sudarshan, 6th edition, McGraw-Hill.
 \end{enumerate}
-\begin{align*}
-
-\end{align*}
-
 \end{frame}
 
 \end{document}
-
-\end{document}
-
