@@ -104,9 +104,9 @@ variable}. Free variable are
   Each unicorn has a horn. 
   \begin{align*}
   &\forall a \in Animals, a \text{ is a unicorn} \rightarrow a \text{ has a horn} \\
-  &\forall a \in Animals, a \text{ is a unicorn} \wedge a \text{ has a horn}
+  &\forall a \in Animals, a \text{ is a unicorn} \wedge a \text{ has a horn} \footnotemark
   \end{align*}
-
+  \footnotetext{Incorrect}
 
   Some horses have horns. 
   \begin{align*}
@@ -306,9 +306,9 @@ What are the titles of the books which have been purchased by every Customer?
 \begin{frame}[fragile]
 \frametitle{Example 3}
 \begin{align*}
-\{r:&title \mid \exists b \in Books, \neg \exists c \in Customers, \neg \exists p \in \text{Purchases} [\\
+\{r:&title \mid \exists b \in Books, \neg \exists c \in Customers, \neg \big(\exists p \in \text{Purchases} [\\
   &c(customerid) = p(customerid) \land  p(bookid) = b(bookid) \\
-  &\land b(title) = r(title)]\}
+  &\land b(title) = r(title)\big)]\}
 \end{align*}
 \begin{lstlisting}
 SELECT b.title
@@ -330,7 +330,7 @@ WHERE NOT EXISTS (SELECT *
 \begin{align*}
 \{t: &title, author, price| \exists b \in Books, \exists p \in Pricing \\
 &[(b(title)=t(title)\wedge b(author)=t(title) \wedge p(price)=t(price)) \wedge \\
-& b(title)='\%CIVIL WAR\%' \wedge \\
+& b(title)=\text{`\%CIVIL WAR\%'} \wedge \\
 & p(bookid)=b(bookid) \wedge p(format)='AUDIO'\\
 ]\}
 \end{align*}
@@ -414,7 +414,7 @@ Which battleships had the guns with the second largest gun size. More precisely,
 
 \begin{frame}[fragile]
 \frametitle{Exercise 7}
-List all the pairs of countries that fought each other in battles. List them with the country that comes first in alphabetical order first\footnotemark \footnotetext{may contains ted entries }.
+List all the pairs of countries that fought each other in battles. List them with the country that comes first in alphabetical order first\footnotemark \footnotetext{may contains duplicate entries }.
 
 \begin{align*}
 \{t:&c_1, c_2| t(c_1)<t(c_2) \wedge \\ 
